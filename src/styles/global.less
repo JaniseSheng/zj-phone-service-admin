@@ -1,0 +1,58 @@
+@import "./color.less";
+@import "./common.less";
+
+* {
+  box-sizing: border-box;
+  background-origin: border-box;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-text-size-adjust: none;
+  -webkit-touch-callout: none; //-webkit-transform-style: preserve-3d;
+}
+
+html {
+  height: 100% !important;
+}
+
+body {
+  user-select: none;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 20px;
+  height: 100% !important;
+  margin: 0;
+  color: var(--xt-text1);
+  -webkit-font-smoothing: antialiased;
+  /*chrome、safari*/
+  -moz-osx-font-smoothing: grayscale;
+  /*firefox*/
+  text-rendering: optimizeLegibility; //-webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -moz-font-feature-settings: 'liga', 'kern';
+}
+
+a {
+  color: currentColor;
+}
+
+html body {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Lantinghei SC", "Hiragino Sans GB", STHeiti, "Noto Sans S Chinese", "Microsoft Yahei", "Microsoft Sans Serif", "WenQuanYi Micro Hei", sans-serif;
+}
+
+html[lang=zh-TW] body {
+  font-family: "MHei", "Helvetica Neue", "Helvetica", "Arial", "Verdana", "sans-serif";
+}
+
+html[lang=ja-JP] body {
+  font-family: "Apple TP", "Helvetica Neue", "Helvetica", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", "Arial", "Verdana", "sans-serif";
+}
+
+html[lang=en-US] body {
+  font-family: "Myriad Set Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+
+img {
+  height: 100%;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: middle;
+}
