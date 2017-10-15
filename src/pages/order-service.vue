@@ -57,9 +57,9 @@
       <el-col :span="12" style="padding-right: 1rem">
         <div class="grid-content bg-purple">
           <p>
-            <el-button type='warning' @click="progress = 1; finishStatus = 'success'">等待</el-button>
-            <el-button type='info' @click="progress = 2; finishStatus = 'success'">进行中</el-button>
-            <el-button type='success' @click="progress = 3; finishStatus = 'success'">完成</el-button>
+            <el-button type='warning' @click="progress = 1; finishStatus = 'success'; refuseRadio = ''">等待</el-button>
+            <el-button type='info' @click="progress = 2; finishStatus = 'success'; refuseRadio = ''">进行中</el-button>
+            <el-button type='success' @click="progress = 3; finishStatus = 'success'; refuseRadio = ''">完成</el-button>
           </p>
           <p style="margin: 1rem 0; padding: .5rem 0; text-align: center; background-color:#6A6A6A; color: white">退款操作</p>
           <p style="margin-bottom: 1rem">
@@ -68,7 +68,7 @@
               <el-radio :label="5">不退款</el-radio>
             </el-radio-group>
           </p>
-          <p style="position: relative; padding-left: 80px;" v-if="refuseRadio == 1">
+          <p style="position: relative; padding-left: 80px;" v-if="refuseRadio == 4">
             <span style="position: absolute; width:80px; left:0;text-align:center;line-height: 32px;">退款金额：</span>
             <el-input v-model="refusePrice" placeholder="请输入退款金额"></el-input>
           </p>

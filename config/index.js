@@ -26,17 +26,16 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8080,
+    port: 6100,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      // proxy all requests starting with /api to jsonplaceholder
-      '/xt-eyiwen-web': {
-        target: 'http://192.168.100.82:8888/xt-eyiwen-web',
+      '/api': {
+        target: 'http://localhost:8080/iphonebackstage/',
         changeOrigin: true,
         pathRewrite: { //需要rewrite重写的, 如果在服务器端做了处理则可以不要这段
-          '^/xt-eyiwen-web': ''
+          '^/api': ''
         }
       }
     },

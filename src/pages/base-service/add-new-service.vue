@@ -53,7 +53,7 @@
                 <span style="line-height: 36px;">价格策略</span>
               </div>
               <div>
-                <el-input placeholder="请输入内容" v-model="item.value" v-for="item in priceRules">
+                <el-input placeholder="请输入内容" v-model="item.value" v-for="item, index in priceRules" :key="'level' + index">
                   <template slot="prepend">等级{{item.level}}</template>
                   <template slot="append">成本</template>
                 </el-input>

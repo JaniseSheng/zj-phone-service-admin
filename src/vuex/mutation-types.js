@@ -1,3 +1,0 @@
-export const CHANGE_NAME = 'CHANGE_NAME'
-export const SORT_ITEMS_ASC = 'SORT_ITEMS_ASC'
-export const SORT_ITEMS_DESC = 'SORT_ITEMS_DESC'

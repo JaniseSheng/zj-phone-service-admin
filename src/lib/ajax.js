@@ -1,26 +1,13 @@
-import Vue from 'vue'
-export const getRequest = (url, params = {}) => {
-  return new Promise((resolve, reject) => {
-    /* eslint-disable */
-    Vue.http.get(url, { params, headers:{token:'111222'} }
-      ).then((res) => {
-        resolve(res.body);
-      }).catch((res) => {
-        reject(res.body);
-      });
-  });
-}
+import axios from 'axios';
+import {hostUrl} from './config';
+import Router from 'vue-router'
 
-export const postRequest = (url, body) => {
-  return new Promise((resolve, reject) => {
-    Vue.http.post(url, body,{
-      emulateJSON:true,
-    })
-    .then((res) => {
-      resolve(res.body);
-    })
-    .catch((res) => {
-      reject(res.body);
-    });
-  });
+export const axiosPost = (url, params) => {
+  const _route = new Router();
+  const _url = hostUrl + url;
+
+  return axios.post(_url, params).then(function(response) {
+    const res = response.data;
+    return res
+  })
 }

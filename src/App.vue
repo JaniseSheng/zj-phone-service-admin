@@ -3,16 +3,16 @@
   <ui-header />
   <el-menu  class="el-menu-demo" mode="horizontal" >
     <el-menu-item index="1">
-      <router-link to="/base-service">基础服务维护</router-link>
+      <router-link to="/base-service" style="display: inline-block">基础服务维护</router-link>
     </el-menu-item>
     <el-menu-item index="2">
-      <router-link to="/customer-service">客户维护</router-link>
+      <router-link to="/customer-service" style="display: inline-block">客户维护</router-link>
     </el-menu-item>
     <el-menu-item index="3">
-      <router-link to="/order-service">订单维护</router-link>
+      <router-link to="/order-service" style="display: inline-block">订单维护</router-link>
     </el-menu-item>
     <el-menu-item index="4">
-      <router-link to="/data-chart-view">仪表盘</router-link>
+      <router-link to="/data-chart-view" style="display: inline-block">仪表盘</router-link>
     </el-menu-item>
   </el-menu>
   <div :class="$style['main-wrapper']">
