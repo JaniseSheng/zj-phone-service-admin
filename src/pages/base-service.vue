@@ -42,13 +42,16 @@
       </el-table-column>
     </el-table>
   </div>
-  <router-view></router-view>
+  <keep-alive>
+    <router-view></router-view>
+  </keep-alive>
 </div>
 </template>
 
 <script>
 import {
-  api_basic_service, api_service_classic_edit
+  api_basic_service_query,
+  api_service_classify_qurey
 } from '@/api/base-service'
 export default {
   data() {
@@ -58,18 +61,16 @@ export default {
     }
   },
   created() {
-    api_basic_service({
+    /**
+     * 基础服务查询
+     **/
+    api_basic_service_query({
       pageSize: 2,
       currentIndex: 1
     }).then((res) => {
       this.tableData = res
     })
-    api_service_classic_edit({
-      pageSize: 2,
-      currentIndex: 1
-    }).then((res) => {
-      console.log(res);
-    })
+
   },
   methods: {
     handleClick() {},

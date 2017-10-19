@@ -1,14 +1,20 @@
-import {axiosPost} from '@/lib/ajax'
-// -------------------------- 当天普通福利 ------------------------------
-//查询当天普通福利
-export const api_basic_service = (params) => {
-  return axiosPost('basicservice', params).then(res=> {
+import {axiosPost, axiosPatch} from '@/lib/ajax'
+// -------------------------- 服务管理 ------------------------------
+//查询基础服务
+export const api_basic_service_query = (params) => {
+  return axiosPost('basic_service_query', params).then(res=> {
     return res.serviceDtoList
   });
 }
-//服务分类编辑
-export const api_service_classic_edit = (params) => {
-  return axiosPost('serviceclassicedit', params).then(res=> {
+//基础服务新增、编辑
+export const api_basic_service_edit = (params) => {
+  return axiosPatch('basic_service_edit', params).then(res=> {
     return res
+  });
+}
+//服务分类查询
+export const api_service_classify_qurey = (pageSize) => {
+  return axiosPost('service_classify_qurey', {pageSize, currentIndex: '1'}).then(res=> {
+    return res.serviceClassifyDtoList
   });
 }

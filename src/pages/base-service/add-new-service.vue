@@ -9,14 +9,13 @@
           <el-input placeholder="服务名称" v-model="serviceName" style="margin-bottom: 1rem"/>
         </el-col>
         <el-col :span="10" style="padding-left: 0.5rem">
-          <el-select v-model="serviceType" placeholder="选择服务类型" style="width:100%; margin-bottom: 1rem">
-            <el-option v-for="item in serviceTypes" :key="item.value" :label="item.label" :value="item.value">
+          <el-select v-model="serviceClassifyId" placeholder="选择服务类型" style="width:100%; margin-bottom: 1rem">
+            <el-option v-for="item in serviceTypes" :key="'serviceTypes' + item.serviceClassifyId" :label="item.serviceClassifyName" :value="item.serviceClassifyId">
             </el-option>
           </el-select>
-          <el-input placeholder="预计时间" icon="" v-model="scheduledTime" style="margin-bottom: 1rem"/>
+          <el-input placeholder="预计时间" icon="" v-model="serviceTime" style="margin-bottom: 1rem"/>
         </el-col>
       </el-row>
-
       <el-row>
         <el-col :span="14" style="padding-right: 0.5rem">
           <div :class="$style['row-contaion-left']">
@@ -25,7 +24,7 @@
                 <p style="margin-bottom: 1rem">服务上架
                   <el-switch v-model="serviceShelves" on-color="#13ce66" off-color="#ff4949" />
                 </p>
-                <p>推荐排名
+                <p>推荐排名(无api)
                   <el-select v-model="rank" placeholder="推荐排名">
                     <el-option v-for="item in ranks" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
@@ -35,13 +34,13 @@
 
               <el-col :span="12" style="padding-left: 0.5rem">
                 <p style="margin-bottom: 1rem">价格趋势
-                  <el-radio-group v-model="priceTrend">
+                  <el-radio-group v-model="servicePriceTrend">
                     <el-radio :label="1">下跌</el-radio>
                     <el-radio :label="2">上涨</el-radio>
                   </el-radio-group>
                 </p>
                 <p>需求趋势
-                  <el-radio-group v-model="needTrend">
+                  <el-radio-group v-model="serviceDemandTrend">
                     <el-radio :label="1">下跌</el-radio>
                     <el-radio :label="2">上涨</el-radio>
                   </el-radio-group>
@@ -53,8 +52,8 @@
                 <span style="line-height: 36px;">价格策略</span>
               </div>
               <div>
-                <el-input placeholder="请输入内容" v-model="item.value" v-for="item, index in priceRules" :key="'level' + index">
-                  <template slot="prepend">等级{{item.level}}</template>
+                <el-input placeholder="请输入内容" v-model="item.servicePrice" v-for="item, index in pricePolicyList" :key="'level' + index">
+                  <template slot="prepend">等级{{item.userLevel}}</template>
                   <template slot="append">成本</template>
                 </el-input>
               </div>
@@ -63,46 +62,37 @@
         </el-col>
         <el-col :span="10" style="padding-left: 0.5rem">
           <div class="grid-content bg-purple-light">
-            <el-input type="textarea" :autosize="{ minRows: 18}" placeholder="请输入内容" v-model="serviceNote" />
+            <el-input type="textarea" :autosize="{ minRows: 18}" placeholder="请输入内容" v-model="serviceRemark1" />
           </div>
         </el-col>
       </el-row>
       <p style="margin-top: 1rem; text-align:center">
-        <el-button type="success">保存</el-button>
+        <el-button type="success" @click='handeInsertService'>保存</el-button>
    <el-button type="warning">取消</el-button>
       </p>
     </div>
   </div>
-  <div :class="$style['main-wrapper-bg']" @click="$router.push({path: '/base-service'})">
+  <div :class="$style['main-wrapper-bg']" @click="$router.back(1)">
   </div>
 </div>
 </template>
 
 <script>
+import {
+  api_service_classify_qurey, api_basic_service_edit
+} from '@/api/base-service'
 export default {
   data() {
     return {
       // 服务ID
       serviceId: '',
       // 服务分类
-      serviceType: '',
-      serviceTypes: [{
-          label: '服务1',
-          value: '1'
-        },
-        {
-          label: '服务2',
-          value: '2'
-        },
-        {
-          label: '服务3',
-          value: '3'
-        }
-      ],
+      serviceClassifyId: '',
+      serviceTypes:[],
       // 服务名称
       serviceName: '',
       // 预计时间
-      scheduledTime: '',
+      serviceTime: '',
       // 服务是否上架
       serviceShelves: false,
       // 推荐排名
@@ -121,29 +111,47 @@ export default {
         }
       ],
       // 价格趋势
-      priceTrend: 1,
+      servicePriceTrend: 1,
       // 需求趋势
-      needTrend: 1,
+      serviceDemandTrend: 1,
       // 价格策略
-      priceRules: [{
-          level: 1,
-          value: '10'
+      pricePolicyList: [{
+          userLevel: 1,
+          servicePrice: 10
         },
         {
-          level: 2,
-          value: '20'
+          userLevel: 2,
+          servicePrice: 15
         },
         {
-          level: 3,
-          value: '30'
+          userLevel: 3,
+          servicePrice: 20
         }
       ],
       // 服务备注
-      serviceNote: ''
+      serviceRemark1: ''
     }
   },
+  created() {
+    api_service_classify_qurey(10).then((res) => {
+      this.serviceTypes = res
+    })
+  },
   methods: {
-
+    handeInsertService(){
+      api_basic_service_edit({
+        serviceClassifyId: this.serviceClassifyId,
+        serviceId: this.serviceId,
+        serviceName: this.serviceName,
+        serviceTime: this.serviceTime,
+        serviceRemark1: this.serviceRemark1,
+        servicePriceTrend: this.servicePriceTrend,
+        serviceDemandTrend: this.serviceDemandTrend,
+        pricePolicyList: this.pricePolicyList
+      }).then(res=> {
+        this.$router.back(1)
+      })
+    }
   }
 }
 </script>
