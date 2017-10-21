@@ -32,7 +32,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://localhost:8080/iphonebackstage/',
+        target: 'http://172.16.16.133:8080/iphonebackstage/',
         changeOrigin: true,
         pathRewrite: { //需要rewrite重写的, 如果在服务器端做了处理则可以不要这段
           '^/api': ''

@@ -5,27 +5,27 @@
     <div :class="$style['main-contaion']">
       <el-row>
         <el-col :span="14" style="padding-right: 0.5rem">
-          <el-input placeholder="填写服务ID" icon="search" v-model='serviceId' style="margin-bottom: 1rem"/>
-          <el-input placeholder="服务名称" v-model="serviceName" style="margin-bottom: 1rem"/>
+          <el-input placeholder="填写服务ID" icon="search" v-model='formData.data.serviceId' style="margin-bottom: 1rem"/>
+          <el-input placeholder="服务名称" v-model="formData.data.serviceName" style="margin-bottom: 1rem"/>
         </el-col>
         <el-col :span="10" style="padding-left: 0.5rem">
-          <el-select v-model="serviceClassifyId" placeholder="选择服务类型" style="width:100%; margin-bottom: 1rem">
+          <el-select v-model="formData.data.serviceClassifyId" placeholder="选择服务类型" style="width:100%; margin-bottom: 1rem">
             <el-option v-for="item in serviceTypes" :key="'serviceTypes' + item.serviceClassifyId" :label="item.serviceClassifyName" :value="item.serviceClassifyId">
             </el-option>
           </el-select>
-          <el-input placeholder="预计时间" icon="" v-model="serviceTime" style="margin-bottom: 1rem"/>
+          <el-input placeholder="预计时间" icon="" v-model="formData.data.serviceTime" style="margin-bottom: 1rem"/>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="14" style="padding-right: 0.5rem">
-          <div :class="$style['row-contaion-left']">
+          <div>
             <el-row style="margin-bottom: 1rem">
               <el-col :span="12" style="padding-right: 0.5rem">
                 <p style="margin-bottom: 1rem">服务上架
-                  <el-switch v-model="serviceShelves" on-color="#13ce66" off-color="#ff4949" />
+                  <el-switch v-model="formData.data.serviceShelves" on-color="#13ce66" off-color="#ff4949" />
                 </p>
                 <p>推荐排名(无api)
-                  <el-select v-model="rank" placeholder="推荐排名">
+                  <el-select v-model="formData.data.rank" placeholder="推荐排名">
                     <el-option v-for="item in ranks" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                   </el-select>
@@ -34,13 +34,13 @@
 
               <el-col :span="12" style="padding-left: 0.5rem">
                 <p style="margin-bottom: 1rem">价格趋势
-                  <el-radio-group v-model="servicePriceTrend">
+                  <el-radio-group v-model="formData.data.servicePriceTrend">
                     <el-radio :label="1">下跌</el-radio>
                     <el-radio :label="2">上涨</el-radio>
                   </el-radio-group>
                 </p>
                 <p>需求趋势
-                  <el-radio-group v-model="serviceDemandTrend">
+                  <el-radio-group v-model="formData.data.serviceDemandTrend">
                     <el-radio :label="1">下跌</el-radio>
                     <el-radio :label="2">上涨</el-radio>
                   </el-radio-group>
@@ -52,7 +52,7 @@
                 <span style="line-height: 36px;">价格策略</span>
               </div>
               <div>
-                <el-input placeholder="请输入内容" v-model="item.servicePrice" v-for="item, index in pricePolicyList" :key="'level' + index">
+                <el-input placeholder="请输入内容" v-model="item.servicePrice" v-for="item, index in formData.data.pricePolicyList" :key="'level' + index">
                   <template slot="prepend">等级{{item.userLevel}}</template>
                   <template slot="append">成本</template>
                 </el-input>
@@ -62,12 +62,12 @@
         </el-col>
         <el-col :span="10" style="padding-left: 0.5rem">
           <div class="grid-content bg-purple-light">
-            <el-input type="textarea" :autosize="{ minRows: 18}" placeholder="请输入内容" v-model="serviceRemark1" />
+            <el-input type="textarea" :autosize="{ minRows: 18}" placeholder="请输入内容" v-model="formData.data.serviceRemark1" />
           </div>
         </el-col>
       </el-row>
       <p style="margin-top: 1rem; text-align:center">
-        <el-button type="success" @click='handeInsertService'>保存</el-button>
+        <el-button type="success" @click='handeEditService'>保存</el-button>
    <el-button type="warning">取消</el-button>
       </p>
     </div>
@@ -84,19 +84,7 @@ import {
 export default {
   data() {
     return {
-      // 服务ID
-      serviceId: '',
-      // 服务分类
-      serviceClassifyId: '',
       serviceTypes:[],
-      // 服务名称
-      serviceName: '',
-      // 预计时间
-      serviceTime: '',
-      // 服务是否上架
-      serviceShelves: false,
-      // 推荐排名
-      rank: 3,
       ranks: [{
           label: 'top1',
           value: '1'
@@ -109,29 +97,10 @@ export default {
           label: 'top3',
           value: '3'
         }
-      ],
-      // 价格趋势
-      servicePriceTrend: 1,
-      // 需求趋势
-      serviceDemandTrend: 1,
-      // 价格策略
-      pricePolicyList: [{
-          userLevel: 1,
-          servicePrice: 10
-        },
-        {
-          userLevel: 2,
-          servicePrice: 15
-        },
-        {
-          userLevel: 3,
-          servicePrice: 20
-        }
-      ],
-      // 服务备注
-      serviceRemark1: ''
+      ]
     }
   },
+  props: ['serviceInfo'],
   computed: {
     formData(){
       return {
@@ -146,21 +115,12 @@ export default {
   },
   methods: {
     handleClickBack(){
-      this.$parent.isShowNewService = false
+      this.$parent.isShowEditService = false
     },
-    handeInsertService(){
-      api_basic_service_edit({
-        serviceClassifyId: this.serviceClassifyId,
-        serviceId: this.serviceId,
-        serviceName: this.serviceName,
-        serviceTime: this.serviceTime,
-        serviceRemark1: this.serviceRemark1,
-        servicePriceTrend: this.servicePriceTrend,
-        serviceDemandTrend: this.serviceDemandTrend,
-        pricePolicyList: this.pricePolicyList
-      }).then(res=> {
-        this.$parent.isShowNewService = false
-        this.$emit('cick-insert')
+    handeEditService(){
+      api_basic_service_edit(this.formData.data).then(res=> {
+        this.$parent.isShowEditService = false
+        this.$emit('cick-edit')
       })
     }
   }

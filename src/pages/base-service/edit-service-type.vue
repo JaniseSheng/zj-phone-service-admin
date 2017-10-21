@@ -8,18 +8,23 @@
       <el-button type='success' @click="handleAddNew">新增</el-button>
     </p>
     <el-table :data="tableData" border max-height='420' style="width: 100%">
-      <el-table-column prop="id" label="服务分类ID">
+      <el-table-column label="服务分类ID">
+        <template scope="scope">
+            <el-input placeholder="服务分类ID" v-model='scope.row.serviceClassifyId' />
+        </template>
       </el-table-column>
-      <el-table-column prop="name" label="服务分类名称">
+      <el-table-column label="服务分类名称">
+        <template scope="scope">
+            <el-input placeholder="服务分类名称" v-model='scope.row.serviceClassifyName' />
+        </template>
       </el-table-column>
-      <el-table-column prop="number" label="分类下服务数量">
+      <el-table-column prop='serviceCount' label="分类下服务数量">
       </el-table-column>
-
       <el-table-column fixed="right" label="操作" width="160">
         <template scope="scope">
-            <el-button @click="handleDelete" type="danger" size="small">删除</el-button>
-            <el-button @click="handleEdit" type="info" size="small">编辑</el-button>
-          </template>
+          <el-button @click="handleDelete" type="danger" size="small">删除</el-button>
+          <el-button @click="handleEdit" type="info" size="small">编辑</el-button>
+        </template>
       </el-table-column>
     </el-table>
   </div>
@@ -29,55 +34,34 @@
 </template>
 
 <script>
+import {
+  api_service_classify_qurey
+} from '@/api/base-service'
 export default {
   data() {
     return {
-      tableData: [{
-          id: '001',
-          name: 'name1',
-          number: '123'
-        },
-        {
-          id: '002',
-          name: 'name1',
-          number: '111'
-        },
-        {
-          id: '003',
-          name: 'name1',
-          number: '444'
-        },
-        {
-          id: '001',
-          name: 'name1',
-          number: '231'
-        },
-        {
-          id: '001',
-          name: 'name1',
-          number: '567'
-        },
-        {
-          id: '001',
-          name: 'name1',
-          number: '222'
-        },
-        {
-          id: '001',
-          name: 'name1',
-          number: '12'
-        }
-      ]
+      tableData: []
     }
   },
+  created(){
+    this._api_service_classify_qurey()
+  },
   methods: {
+    _api_service_classify_qurey(){
+      api_service_classify_qurey(100).then((res) => {
+        this.tableData = res
+      })
+    },
+    handleSearch() {
+      this._api_service_classify_qurey()
+    },
     handleDelete() {
       console.log('delete');
     },
     handleEdit() {
       console.log('edit');
     },
-    handleAddNew(){
+    handleAddNew() {
       console.log('handleAddNew');
     }
   }

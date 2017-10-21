@@ -3,16 +3,17 @@
   <div class="ui-service-list">
     <p>
       快捷搜索关键字：
-      <el-button type="success" size="small" @click='handleClick'>全部</el-button>
-      <el-button type="success" size="small">GSX</el-button>
-      <el-button type="success" size="small">AT&T</el-button>
-      <el-button type="success" size="small">ID</el-button>
-      <el-button type="success" size="small">SN</el-button>
+      <el-button type="success" size="small" @click="_api_basic_service_query('')">全部</el-button>
+      <el-button type="success" size="small" @click="_api_basic_service_query('GSX')">GSX</el-button>
+      <el-button type="success" size="small" @click="_api_basic_service_query('AT&T')">AT&T</el-button>
+      <el-button type="success" size="small" @click="_api_basic_service_query('ID')">ID</el-button>
+      <el-button type="success" size="small" @click="_api_basic_service_query('SN')">SN</el-button>
     </p>
     <div :class="$style['search-wrapper']">
-      <el-input v-model="searchInputValue" placeholder="请选择日期" icon="search" :on-icon-click='handleSelectService'></el-input>
-      <el-button type="success" @click="$router.push({ path: '/base-service/add-new-service' })">添加新服务</el-button>
-      <el-button type="warning" @click="$router.push({ path: '/base-service/edit-service-type' })">服务分类编辑</el-button>
+      <el-input v-model="searchInputValue" placeholder="输入服务名称查询" icon="search"></el-input>
+      <el-button style='margin-left: 20px' type="primary" icon="search" @click='_api_basic_service_query(searchInputValue)'>搜索</el-button>
+      <el-button type="success" @click="isShowNewService = true">添加新服务</el-button>
+      <el-button type="warning" @click="isShowEditServiceType = true">服务分类编辑</el-button>
       <el-button type="info" @click="$router.push('/base-service/level-manage')">等级维护</el-button>
     </div>
     <el-table :data="tableData" border max-height='680' style="width: 100%">
@@ -34,28 +35,42 @@
       </el-table-column>
       <el-table-column prop="serviceDemandTrend" label="需求趋势" width="100">
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="120">
+      <el-table-column fixed="right" label="操作" width="200">
         <template scope="scope">
-            <el-button @click="handleEdit" type="text" size="small">编辑</el-button>
-            <el-button type="text" size="small">上架</el-button>
+            <el-button @click="handleEdit(scope.row)" type="info" size="small">编辑</el-button>
+            <el-button type="danger" size="small" @click='_api_basic_service_delete(scope.row.serviceId)' >删除</el-button>
+            <el-button type="success" size="small">上架</el-button>
           </template>
       </el-table-column>
     </el-table>
   </div>
-  <keep-alive>
-    <router-view></router-view>
-  </keep-alive>
+  <template v-if='isShowNewService'>
+    <new-service @cick-insert='_api_basic_service_query'/>
+  </template>
+  <template v-if='isShowEditService'>
+    <edit-service :serviceInfo='editServiceInfo' @cick-edit='_api_basic_service_query' />
+  </template>
+  <template v-if='isShowEditServiceType'>
+    <edit-service-type />
+  </template>
 </div>
 </template>
 
 <script>
 import {
   api_basic_service_query,
-  api_service_classify_qurey
+  api_basic_service_delete
 } from '@/api/base-service'
+import newService from './base-service/add-new-service.vue'
+import editService from './base-service/edit-service.vue'
+import editServiceType from './base-service/edit-service-type.vue'
 export default {
   data() {
     return {
+      isShowNewService: false, //是否打开添加新服务
+      isShowEditService: false, //是否打开编辑新服务
+      isShowEditServiceType: false, //是否打开编辑服务类型
+      editServiceInfo: '',
       searchInputValue: '',
       tableData: []
     }
@@ -64,18 +79,33 @@ export default {
     /**
      * 基础服务查询
      **/
-    api_basic_service_query({
-      pageSize: 2,
-      currentIndex: 1
-    }).then((res) => {
-      this.tableData = res
-    })
-
+    this._api_basic_service_query()
   },
   methods: {
-    handleClick() {},
-    handleSelectService(e) {},
-    handleEdit(e) {}
+    _api_basic_service_delete(serviceId){
+      console.log(serviceId);
+      api_basic_service_delete(serviceId).then(res=> {
+        console.log(res);
+      })
+    },
+    _api_basic_service_query(keyword = '') {
+      api_basic_service_query({
+          pageSize: 100,
+          currentIndex: 1,
+          keyword
+        }).then((res) => {
+          this.tableData = res
+        })
+    },
+    handleEdit(item) {
+      this.editServiceInfo = item
+      this.isShowEditService = true
+    }
+  },
+  components: {
+    newService,
+    editService,
+    editServiceType
   }
 }
 </script>
