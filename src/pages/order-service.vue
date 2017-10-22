@@ -91,6 +91,9 @@
 
 <script>
 import uiModal from '@/components/ui-modal';
+import {
+  api_history_order_list_query
+} from '@/api/histroy-order'
 export default {
   data() {
     return {
@@ -189,10 +192,21 @@ export default {
       }
     }
   },
+  created() {
+    this._api_history_order_list_query()
+  },
   components: {
     uiModal
   },
   methods: {
+    _api_history_order_list_query(){
+      api_history_order_list_query({
+        pageSize: '100',
+        currentIndex: '1'
+      }).then(res=> {
+        console.log(res);
+      })
+    },
     hangeRadioChange(e){
       this.finishStatus = 'error';
       this.progress = e;
