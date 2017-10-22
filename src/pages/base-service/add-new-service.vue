@@ -25,8 +25,8 @@
                   <el-switch v-model="serviceShelves" on-color="#13ce66" off-color="#ff4949" />
                 </p>
                 <p>推荐排名(无api)
-                  <el-select v-model="rank" placeholder="推荐排名">
-                    <el-option v-for="item in ranks" :key="item.value" :label="item.label" :value="item.value">
+                  <el-select v-model="serviceRank" placeholder="推荐排名">
+                    <el-option v-for="item in serviceRanks" :key="item.userLevel" :label="item.userLevel" :value="item.userLevelCode">
                     </el-option>
                   </el-select>
                 </p>
@@ -62,7 +62,7 @@
         </el-col>
         <el-col :span="10" style="padding-left: 0.5rem">
           <div class="grid-content bg-purple-light">
-            <el-input type="textarea" :autosize="{ minRows: 18}" placeholder="请输入内容" v-model="serviceRemark1" />
+            <el-input type="textarea" :autosize="{ minRows: 18}" placeholder="请输入内容" v-model="serviceRemark" />
           </div>
         </el-col>
       </el-row>
@@ -79,7 +79,7 @@
 
 <script>
 import {
-  api_service_classify_qurey, api_basic_service_edit
+  api_service_classify_qurey, api_basic_service_edit, api_level_query
 } from '@/api/base-service'
 export default {
   data() {
@@ -96,24 +96,12 @@ export default {
       // 服务是否上架
       serviceShelves: false,
       // 推荐排名
-      rank: 3,
-      ranks: [{
-          label: 'top1',
-          value: '1'
-        },
-        {
-          label: 'top2',
-          value: '2'
-        },
-        {
-          label: 'top3',
-          value: '3'
-        }
-      ],
+      serviceRank: '3',
+      serviceRanks: [],
       // 价格趋势
-      servicePriceTrend: 1,
+      servicePriceTrend: 1, // 1 下 2上
       // 需求趋势
-      serviceDemandTrend: 1,
+      serviceDemandTrend: 1, // 1下 2上
       // 价格策略
       pricePolicyList: [{
           userLevel: 1,
@@ -129,7 +117,7 @@ export default {
         }
       ],
       // 服务备注
-      serviceRemark1: ''
+      serviceRemark: ''
     }
   },
   computed: {
@@ -140,6 +128,10 @@ export default {
     }
   },
   created() {
+    api_level_query().then(res=> {
+      console.log(res);
+        this.serviceRanks = res
+    })
     api_service_classify_qurey(10).then((res) => {
       this.serviceTypes = res
     })
@@ -154,7 +146,7 @@ export default {
         serviceId: this.serviceId,
         serviceName: this.serviceName,
         serviceTime: this.serviceTime,
-        serviceRemark1: this.serviceRemark1,
+        serviceRemark: this.serviceRemark,
         servicePriceTrend: this.servicePriceTrend,
         serviceDemandTrend: this.serviceDemandTrend,
         pricePolicyList: this.pricePolicyList

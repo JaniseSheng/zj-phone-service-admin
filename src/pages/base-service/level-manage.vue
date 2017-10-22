@@ -1,67 +1,88 @@
 <template>
 <div :class="$style['add-new-service']">
   <div :class="$style['main-wrapper']" style="border: 1px solid #f7ba2a;">
-    <p style="border-bottom: 2px solid #50bfff; margin-bottom: 1rem;">
-      <el-tag type="primary" style="font-size: 1.2rem; height: auto; padding: 0.5rem">会员等级维护</el-tag>
+    <p style="border-bottom: 2px solid #f7ba2a; margin-bottom: 1rem;">
+      <el-tag type="warning" style="font-size: 1.2rem; height: auto; padding: 0.5rem">等级维护</el-tag>
     </p>
     <p style="margin-bottom: 1rem;">
       <el-button type='success' @click="handleAddNew">新增</el-button>
     </p>
     <el-table :data="tableData" border max-height='420' style="width: 100%">
-      <el-table-column prop="level" label="会员等级">
-      </el-table-column>
-      <el-table-column prop="info" label="等级说明">
-      </el-table-column>
-
-      <el-table-column fixed="right" label="操作" width="160">
+      <el-table-column label="等级Id">
         <template scope="scope">
-            <el-button @click="handleDelete" type="danger" size="small">删除</el-button>
-            <el-button @click="handleEdit" type="info" size="small">编辑</el-button>
-          </template>
+            <el-input placeholder="等级Id" v-model='scope.row.userLevelCode' />
+        </template>
+      </el-table-column>
+      <el-table-column label="等级名称">
+        <template scope="scope">
+            <el-input placeholder="等级名称" v-model='scope.row.userLevel' />
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" label="操作" width="200">
+        <template scope="scope">
+          <el-button @click="handleDelete(scope.row.serviceClassifyId)" type="danger" size="small">删除</el-button>
+          <el-button @click="handleEdit(scope.row)" type="info" size="small">编辑/保存</el-button>
+        </template>
       </el-table-column>
     </el-table>
   </div>
-  <div :class="$style['main-wrapper-bg']" @click="$router.push({path: '/base-service'})">
+  <div :class="$style['main-wrapper-bg']" @click="$parent.isShowLevel = false">
   </div>
 </div>
 </template>
 
 <script>
+import {
+  api_level_query,
+  api_level_edit,
+  api_service_classify_delete
+} from '@/api/base-service'
 export default {
   data() {
     return {
-      tableData: [{
-          level: '001',
-          info: 'name1'
-        },
-        {
-          level: '002',
-          info: 'name1'
-        },
-        {
-          level: '003',
-          info: 'name1'
-        },
-        {
-          level: '004',
-          info: 'name1'
-        },
-        {
-          level: '005',
-          info: 'name1'
-        }
-      ]
+      tableData: []
     }
   },
+  created() {
+    this._api_level_query()
+  },
   methods: {
-    handleDelete() {
-      console.log('delete');
+    /**
+     * 查询服务类型
+     **/
+    _api_level_query() {
+      api_level_query().then((res) => {
+        console.log(res);
+        this.tableData = res
+      })
     },
-    handleEdit() {
-      console.log('edit');
+    /**
+     * 新增、编辑服务
+     **/
+    _api_level_edit(params) {
+      return api_level_edit(params)
+    },
+    handleSearch() {
+      this._api_level_query()
+    },
+    handleDelete(serviceClassifyId) {
+      api_service_classify_delete(serviceClassifyId).then(()=>{
+        this.$message.success('删除成功！！')
+        this._api_level_query()
+      })
+    },
+    handleEdit(item) {
+      console.log(item);
+      this._api_level_edit(item).then(() => {
+        this.$message.success('保存成功！！')
+        this._api_level_query()
+      })
     },
     handleAddNew() {
-      console.log('handleAddNew');
+      this.tableData.push({
+        userLevelCode: '',
+        userLevel: ''
+      })
     }
   }
 }

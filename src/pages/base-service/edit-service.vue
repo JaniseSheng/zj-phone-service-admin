@@ -1,7 +1,7 @@
 <template>
 <div :class="$style['add-new-service']">
   <div :class="$style['main-wrapper']">
-    <p style="border-bottom: 2px solid #13ce66; margin-bottom: 1rem;"><el-tag type="success" style="font-size: 1.2rem; height: auto; padding: 0.5rem">添加新服务</el-tag></p>
+    <p style="border-bottom: 2px solid #13ce66; margin-bottom: 1rem;"><el-tag type="success" style="font-size: 1.2rem; height: auto; padding: 0.5rem">编辑服务</el-tag></p>
     <div :class="$style['main-contaion']">
       <el-row>
         <el-col :span="14" style="padding-right: 0.5rem">
@@ -62,7 +62,7 @@
         </el-col>
         <el-col :span="10" style="padding-left: 0.5rem">
           <div class="grid-content bg-purple-light">
-            <el-input type="textarea" :autosize="{ minRows: 18}" placeholder="请输入内容" v-model="formData.data.serviceRemark1" />
+            <el-input type="textarea" :autosize="{ minRows: 18}" placeholder="请输入内容" v-model="formData.data.serviceRemark" />
           </div>
         </el-col>
       </el-row>

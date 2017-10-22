@@ -20,22 +20,24 @@
       </el-table-column>
       <el-table-column prop='serviceCount' label="分类下服务数量">
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="160">
+      <el-table-column fixed="right" label="操作" width="200">
         <template scope="scope">
-          <el-button @click="handleDelete" type="danger" size="small">删除</el-button>
-          <el-button @click="handleEdit" type="info" size="small">编辑</el-button>
+          <el-button @click="handleDelete(scope.row.serviceClassifyId)" type="danger" size="small">删除</el-button>
+          <el-button @click="handleEdit(scope.row)" type="info" size="small">编辑/保存</el-button>
         </template>
       </el-table-column>
     </el-table>
   </div>
-  <div :class="$style['main-wrapper-bg']" @click="$router.push({path: '/base-service'})">
+  <div :class="$style['main-wrapper-bg']" @click="$parent.isShowEditServiceType = false">
   </div>
 </div>
 </template>
 
 <script>
 import {
-  api_service_classify_qurey
+  api_service_classify_qurey,
+  api_service_classify_edit,
+  api_service_classify_delete
 } from '@/api/base-service'
 export default {
   data() {
@@ -43,26 +45,45 @@ export default {
       tableData: []
     }
   },
-  created(){
+  created() {
     this._api_service_classify_qurey()
   },
   methods: {
-    _api_service_classify_qurey(){
+    /**
+     * 查询服务类型
+     **/
+    _api_service_classify_qurey() {
       api_service_classify_qurey(100).then((res) => {
         this.tableData = res
       })
     },
+    /**
+     * 新增、编辑服务
+     **/
+    _api_service_classify_edit(params) {
+      return api_service_classify_edit(params)
+    },
     handleSearch() {
       this._api_service_classify_qurey()
     },
-    handleDelete() {
-      console.log('delete');
+    handleDelete(serviceClassifyId) {
+      api_service_classify_delete(serviceClassifyId).then(()=>{
+        this.$message.success('删除成功！！')
+        this._api_service_classify_qurey()
+      })
     },
-    handleEdit() {
-      console.log('edit');
+    handleEdit(item) {
+      console.log(item);
+      this._api_service_classify_edit(item).then(() => {
+        this.$message.success('保存成功！！')
+        this._api_service_classify_qurey()
+      })
     },
     handleAddNew() {
-      console.log('handleAddNew');
+      this.tableData.push({
+        serviceClassifyId: '',
+        serviceClassifyName: ''
+      })
     }
   }
 }

@@ -17,9 +17,16 @@ export const axiosPatch = (url, params) => {
     return res
   })
 }
-export const axiosDel = (url, params) => {
-  const _url = hostUrl + url + '?' + params;
+export const axiosDel = (url, params = '') => {
+  const _url = hostUrl + url + params;
   return axios.delete(_url).then(function(response) {
+    const res = response.data;
+    return res
+  })
+}
+export const axiosGet = (url, params = '') => {
+  const _url = hostUrl + url + params;
+  return axios.get(_url).then(function(response) {
     const res = response.data;
     return res
   })

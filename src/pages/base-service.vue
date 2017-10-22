@@ -14,7 +14,7 @@
       <el-button style='margin-left: 20px' type="primary" icon="search" @click='_api_basic_service_query(searchInputValue)'>搜索</el-button>
       <el-button type="success" @click="isShowNewService = true">添加新服务</el-button>
       <el-button type="warning" @click="isShowEditServiceType = true">服务分类编辑</el-button>
-      <el-button type="info" @click="$router.push('/base-service/level-manage')">等级维护</el-button>
+      <el-button type="info" @click="isShowLevel = true">等级维护</el-button>
     </div>
     <el-table :data="tableData" border max-height='680' style="width: 100%">
       <el-table-column prop="serviceId" label="服务ID" width="90">
@@ -31,9 +31,9 @@
       </el-table-column>
       <el-table-column prop="serviceRemark" label="服务备注" width="240">
       </el-table-column>
-      <el-table-column prop="servicePriceTrend" label="价格趋势" width="100">
+      <el-table-column prop="servicePriceTrend_text" label="价格趋势" width="100">
       </el-table-column>
-      <el-table-column prop="serviceDemandTrend" label="需求趋势" width="100">
+      <el-table-column prop="serviceDemandTrend_text" label="需求趋势" width="100">
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="200">
         <template scope="scope">
@@ -53,6 +53,9 @@
   <template v-if='isShowEditServiceType'>
     <edit-service-type />
   </template>
+  <template v-if='isShowLevel'>
+    <level-manage />
+  </template>
 </div>
 </template>
 
@@ -64,12 +67,14 @@ import {
 import newService from './base-service/add-new-service.vue'
 import editService from './base-service/edit-service.vue'
 import editServiceType from './base-service/edit-service-type.vue'
+import levelManage from './base-service/level-manage.vue'
 export default {
   data() {
     return {
       isShowNewService: false, //是否打开添加新服务
       isShowEditService: false, //是否打开编辑新服务
       isShowEditServiceType: false, //是否打开编辑服务类型
+      isShowLevel: false, //是否打开编辑等级服务
       editServiceInfo: '',
       searchInputValue: '',
       tableData: []
@@ -82,20 +87,27 @@ export default {
     this._api_basic_service_query()
   },
   methods: {
-    _api_basic_service_delete(serviceId){
+    _api_basic_service_delete(serviceId) {
       console.log(serviceId);
-      api_basic_service_delete(serviceId).then(res=> {
+      api_basic_service_delete(serviceId).then(res => {
         console.log(res);
       })
     },
     _api_basic_service_query(keyword = '') {
       api_basic_service_query({
-          pageSize: 100,
-          currentIndex: 1,
-          keyword
-        }).then((res) => {
-          this.tableData = res
+        pageSize: 100,
+        currentIndex: 1,
+        keyword
+      }).then((res) => {
+        this.tableData = res.map(item => {
+          return Object.assign({}, item, {
+            serviceDemandTrend: parseInt(item.serviceDemandTrend),
+            servicePriceTrend: parseInt(item.servicePriceTrend),
+            serviceDemandTrend_text: item.serviceDemandTrend == '1' ? '下降' : '上升',
+            servicePriceTrend_text: item.servicePriceTrend == '1' ? '下降' : '上升'
+          })
         })
+      })
     },
     handleEdit(item) {
       this.editServiceInfo = item
@@ -105,7 +117,8 @@ export default {
   components: {
     newService,
     editService,
-    editServiceType
+    editServiceType,
+    levelManage
   }
 }
 </script>
