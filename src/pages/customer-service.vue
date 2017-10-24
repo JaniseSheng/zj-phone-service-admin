@@ -3,30 +3,30 @@
   <div class="ui-service-list">
     <div :class="$style['search-wrapper']">
       <el-input v-model="searchInputValue" placeholder="姓名，手机号，邮箱模糊查询" icon="search" style="margin-right: 1rem"></el-input>
-      <el-button type="success" @click="handleClickSearch(searchInputValue)" style="width: 168px">查询</el-button>
+      <el-button type="success" @click="_api_user_account(searchInputValue)" style="width: 168px">查询</el-button>
     </div>
     <el-table :data="tableData" border max-height='680' style="width: 100%">
-      <el-table-column prop="createDate" label="用户注册日期" width="180">
+      <el-table-column prop="reg_date" label="用户注册日期" width="180">
       </el-table-column>
-      <el-table-column prop="userId" label="用户ID" width="140">
+      <el-table-column prop="user_id" label="用户ID" width="140">
       </el-table-column>
-      <el-table-column prop="userName" label="用户名" width="180">
+      <el-table-column prop="user_name" label="用户名" width="180">
       </el-table-column>
-      <el-table-column prop="level" label="等级" width="80">
+      <el-table-column prop="user_level_code" label="等级" width="80">
       </el-table-column>
-      <el-table-column prop="name" label="姓名" width="90">
+      <el-table-column prop="full_name" label="姓名" width="90">
       </el-table-column>
-      <el-table-column prop="gender" label="性别" width="80">
+      <el-table-column prop="sex_label" label="性别" width="80">
       </el-table-column>
-      <el-table-column prop="remainMoney" label="账户余额" width="100">
+      <el-table-column prop="acc_balance" label="账户余额" width="100">
       </el-table-column>
-      <el-table-column prop="monthMoney" label="本月金额" width="100">
+      <el-table-column prop="this_month_amount" label="本月金额" width="100">
       </el-table-column>
-      <el-table-column prop="totalMoney" label="累计金额" width="100">
+      <el-table-column prop="total_amount" label="累计金额" width="100">
       </el-table-column>
-      <el-table-column prop="progress" label="进度+进行中" width="120">
+      <el-table-column prop="pending_processing_per" label="进度+进行中" width="120">
       </el-table-column>
-      <el-table-column prop="refuse" label="拒绝未退" width="100">
+      <el-table-column prop="reject_label" label="拒绝未退" width="100">
       </el-table-column>
       <el-table-column label="充值" width="80">
         <template scope="scope">
@@ -43,9 +43,9 @@
               <el-button type="success" size="small" @click="modelShow = true; showIndex = 3; modelTitle = '修改密码'; userInfo = scope.row">更改</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="账户状态" width="100">
+      <el-table-column prop="acc_status" label="账户状态" width="100">
         <template scope="scope">
-              <el-button :type="scope.row.status ? 'info' : 'danger'" size="small"  @click="modelShow = true; showIndex = 4; modelTitle = '修改用户状态'; userInfo = scope.row">{{scope.row.status ? '启用' : '停用'}}</el-button>
+              <el-button :type="scope.row.acc_status == 1 ? '启用' : '停用'" size="small"  @click="modelShow = true; showIndex = 4; modelTitle = '修改用户状态'; userInfo = scope.row">{{scope.row.acc_status ? '启用' : '停用'}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -65,72 +65,12 @@ import addPrice from './customer-service/addPrice';
 import allowArrears from './customer-service/allowArrears';
 import rePassword from './customer-service/rePassword';
 import status from './customer-service/status';
-
+import {api_user_account} from '@/api/customer-service'
 export default {
   data() {
     return {
       searchInputValue: '',
-      tableData: [{
-          createDate: '2017-12-03',
-          userId: '7788162721',
-          userName: 'janise001',
-          level: '1',
-          name: '张三',
-          gender: '男',
-          remainMoney: '245.00',
-          monthMoney: '200.00',
-          totalMoney: '400.00',
-          progress: '3',
-          refuse: '1',
-          arrowArrears: false,
-          status: true
-        },
-        {
-          createDate: '2017-12-03',
-          userId: '7788162721',
-          userName: 'janise001',
-          level: '1',
-          name: '张三',
-          gender: '男',
-          remainMoney: '245.00',
-          monthMoney: '200.00',
-          totalMoney: '400.00',
-          progress: '3',
-          refuse: '1',
-          arrowArrears: true,
-          status: true
-        },
-        {
-          createDate: '2017-12-03',
-          userId: '7788162721',
-          userName: 'janise001',
-          level: '1',
-          name: '张三',
-          gender: '男',
-          remainMoney: '245.00',
-          monthMoney: '200.00',
-          totalMoney: '400.00',
-          progress: '3',
-          refuse: '1',
-          arrowArrears: false,
-          status: true
-        },
-        {
-          createDate: '2017-12-03',
-          userId: '7788162721',
-          userName: 'janise001',
-          level: '1',
-          name: '张三',
-          gender: '男',
-          remainMoney: '245.00',
-          monthMoney: '200.00',
-          totalMoney: '400.00',
-          progress: '3',
-          refuse: '1',
-          arrowArrears: true,
-          status: false
-        }
-      ],
+      tableData: [],
       modelShow: false,
       showIndex: '1',
       ismodelShow: true,
@@ -138,7 +78,22 @@ export default {
       userInfo: {}
     }
   },
+  created() {
+    this._api_user_account();
+  },
   methods: {
+    _api_user_account(keyword){
+      const params = keyword ? `?keyword=${keyword}` : ''
+      api_user_account(params).then(res=> {
+        this.tableData = res.map(item=> {
+          return Object.assign({}, item, {
+            sex_label: item.sex == 1 ? '女' : '男',
+            pending_processing_per: item.pending_processing + '%',
+            reject_label: item.reject == 0 ? '拒绝' : '允许'
+          })
+        })
+      })
+    },
     handleClickSearch(value) {
       console.log('value', value);
     }

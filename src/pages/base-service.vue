@@ -88,9 +88,14 @@ export default {
   },
   methods: {
     _api_basic_service_delete(serviceId) {
-      console.log(serviceId);
-      api_basic_service_delete(serviceId).then(res => {
-        console.log(res);
+      const decodeUnicode = (str) => {
+        str = str.replace(/\\/g, '%');
+        return unescape(str);
+      }
+      api_basic_service_delete(decodeUnicode(serviceId)).then(res => {
+        this.$message.success('删除成功！')
+        this._api_basic_service_query()
+
       })
     },
     _api_basic_service_query(keyword = '') {

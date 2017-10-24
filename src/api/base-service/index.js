@@ -14,7 +14,7 @@ export const api_basic_service_edit = (params) => {
 }
 //基础服务删除
 export const api_basic_service_delete = (serviceId) => {
-  return axiosDel('basic_service_delete', `?serviceId=${serviceId}`).then(res=> {
+  return axiosDel('basic_service_delete', `/${serviceId}`).then(res=> {
     return res
   });
 }
@@ -30,7 +30,7 @@ export const api_service_classify_edit = (params) => {
 }
 //服务分类删除
 export const api_service_classify_delete = (serviceClassifyId) => {
-  return axiosDel('service_classify_delete', `?serviceClassifyId=${serviceClassifyId}`)
+  return axiosDel('service_classify_delete', `/${serviceClassifyId}`)
 }
 
 //等级服务查询
