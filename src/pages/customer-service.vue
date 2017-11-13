@@ -89,7 +89,8 @@ export default {
           return Object.assign({}, item, {
             sex_label: item.sex == 1 ? '女' : '男',
             pending_processing_per: item.pending_processing + '%',
-            reject_label: item.reject == 0 ? '拒绝' : '允许'
+            reject_label: item.reject == 0 ? '拒绝' : '允许',
+            acc_balance: item.acc_balance || 0
           })
         })
       })

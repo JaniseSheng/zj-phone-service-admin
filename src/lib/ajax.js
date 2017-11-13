@@ -9,6 +9,13 @@ export const axiosPost = (url, params) => {
     return res
   })
 }
+export const axiosPut = (url, params) => {
+  const _url = hostUrl + url;
+  return axios.put(_url, params).then(function(response) {
+    const res = response.data;
+    return res
+  })
+}
 
 export const axiosPatch = (url, params) => {
   const _url = hostUrl + url;
